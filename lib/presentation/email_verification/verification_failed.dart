@@ -25,6 +25,7 @@ class VerificationFailed extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text('Failed 😭😭', style: 19.sp()),
                 Text(message, style: 15.sp()),
                 ElevatedButton(
                   onPressed: () {},
