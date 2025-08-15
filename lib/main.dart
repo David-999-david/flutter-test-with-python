@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testflutt/deeplinks/deep_link_state.dart';
 import 'package:testflutt/dioClient.dart';
 import 'package:testflutt/global_navigation/naviagation_key.dart';
-import 'package:testflutt/presentation/auth/register_screen.dart';
+import 'package:testflutt/presentation/start_check/start_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DioClient.init();
+  final GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
+  await DioClient.init(key);
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -20,8 +21,9 @@ class MyApp extends ConsumerWidget {
     final navkey = ref.watch(naviagtionProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: navkey,
-      home: RegisterScreen(),
+      home: StartCheck(),
     );
   }
 }

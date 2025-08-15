@@ -3,8 +3,14 @@ import 'package:logger/logger.dart';
 
 class LoggerInterceptor extends Interceptor {
   final Logger logger = Logger(
-      printer: PrettyPrinter(
-          methodCount: 0, printEmojis: true, colors: true, printTime: true));
+    printer: PrettyPrinter(
+      methodCount: 0,
+      lineLength: 140,
+      printEmojis: true,
+      colors: true,
+      dateTimeFormat: DateTimeFormat.dateAndTime,
+    ),
+  );
 
   String fullPath(RequestOptions options) {
     return '${options.baseUrl}${options.path}';
@@ -17,8 +23,9 @@ class LoggerInterceptor extends Interceptor {
     logger.i('${options.method} ➡️ ${fullPath(options)}');
 
     options.headers.forEach((key, value) {
-      final display =
-          key.toLowerCase() == 'authorization' ? 'Bearer ***' : value;
+      final display = key.toLowerCase() == 'authorization'
+          ? 'Bearer ***'
+          : value;
       logger.d('🔊 Header : $key : $display');
     });
 
@@ -41,7 +48,8 @@ class LoggerInterceptor extends Interceptor {
         : '${DateTime.now().difference(start).inMilliseconds}ms';
 
     logger.i(
-        '✔️ [${response.statusCode}]  <= ${fullPath(response.requestOptions)} (⏰ $showMs)');
+      '✔️ [${response.statusCode}]  <= ${fullPath(response.requestOptions)} (⏰ $showMs)',
+    );
 
     if (response.data != null) {
       logger.d('🔊 Response : ${response.data}');
@@ -58,7 +66,8 @@ class LoggerInterceptor extends Interceptor {
         : '${DateTime.now().difference(start).inMilliseconds}ms';
 
     logger.i(
-        '❌ [${err.response!.statusCode}] ${fullPath(err.requestOptions)} (⏰ $showMs)');
+      '❌ [${err.response!.statusCode}] ${fullPath(err.requestOptions)} (⏰ $showMs)',
+    );
 
     if (errOptions.data != null) {
       logger.d('🔊 Error Request : ${errOptions.data}');

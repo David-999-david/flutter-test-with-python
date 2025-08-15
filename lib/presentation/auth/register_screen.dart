@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testflutt/data/model/auth_model.dart';
-import 'package:testflutt/presentation/auth/email_verify_loading.dart';
+import 'package:testflutt/presentation/auth/login_screen.dart';
 import 'package:testflutt/presentation/auth/state/auth_state.dart';
 import 'package:testflutt/text_app.dart';
 
@@ -16,6 +16,26 @@ class RegisterScreen extends ConsumerWidget {
     final TextEditingController phone = TextEditingController();
     final TextEditingController password = TextEditingController();
     final TextEditingController name = TextEditingController();
+
+    ref.listen(registerStateProvider, (pre, next) {
+      next.when(
+        data: (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Reigster success, pleash check your mail for email verify!",
+              ),
+            ),
+          );
+        },
+        error: (error, _) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(error.toString())));
+        },
+        loading: () {},
+      );
+    });
 
     final register = ref.watch(registerStateProvider);
 
@@ -52,6 +72,35 @@ class RegisterScreen extends ConsumerWidget {
                       },
                 child: Text('Sign up'),
               ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginScreen();
+                      },
+                    ),
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Already have and account?  ',
+                        style: 13.sp(),
+                      ),
+                      TextSpan(
+                        text: 'Login',
+                        style: 14.sp().copyWith(
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -70,6 +119,7 @@ Widget textfiedl(TextEditingController c, String hint, String label) {
         if (value == null || value.isEmpty) {
           return '$label is missing';
         }
+        return null;
       },
     ),
   );
