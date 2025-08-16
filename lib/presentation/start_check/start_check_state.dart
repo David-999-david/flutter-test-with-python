@@ -8,7 +8,7 @@ class StartCheckState extends StateNotifier<AsyncValue<bool>> {
 
   Future<void> check() async {
     state = AsyncValue.loading();
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 2));
     final result = await AsyncValue.guard(() => Authservice().handlerStart());
     state = result;
   }

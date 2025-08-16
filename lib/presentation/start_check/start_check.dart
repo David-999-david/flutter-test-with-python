@@ -30,6 +30,11 @@ class _StartCheckState extends ConsumerState<StartCheck> {
               },
             ),
           );
+          !ok
+              ? ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Token expired')))
+              : SizedBox.shrink();
         },
         error: (error, _) {
           ScaffoldMessenger.of(

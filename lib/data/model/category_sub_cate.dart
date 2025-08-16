@@ -38,7 +38,7 @@ class SubCategory {
       id: json['id'],
       categoryId: json['category_id'],
       name: json['name'],
-      createdAt: json['created_at'],
+      createdAt: DateTime.parse(json['created_at']),
     );
   }
 }
