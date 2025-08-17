@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:testflutt/data/model/category_sub_cate.dart';
+import 'package:testflutt/data/model/project_model.dart';
 import 'package:testflutt/presentation/home/home_state.dart';
 import 'package:testflutt/text_app.dart';
 
@@ -168,6 +169,30 @@ class _HomeState extends ConsumerState<Home> {
               textfield(titlec, 'Title', 'Title', 1),
               SizedBox(height: 10),
               textfield(descpc, 'Description', 'Description', 3),
+              SizedBox(height: 15),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    ref
+                        .read(ProjectProvider.notifier)
+                        .create(
+                          insertProject(
+                            title: titlec.text,
+                            description: descpc.text,
+                            sub_id: selecgedSub!.id,
+                          ),
+                          XFile(pickedImage!.path),
+                        );
+                  },
+                  child: Text('Confirm', style: 14.sp()),
+                ),
+              ),
             ],
           ),
         ),

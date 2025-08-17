@@ -12,4 +12,6 @@ class ApiUrl {
   static const getSubCate = '/sub-category';
 
   static const refresh = '/auth/mobile/refresh';
+
+  static const createProject = '/project';
 }

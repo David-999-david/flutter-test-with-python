@@ -1,11 +1,16 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:testflutt/data/model/category_sub_cate.dart';
+import 'package:testflutt/data/model/project_model.dart';
 import 'package:testflutt/data/service/cat_sub.dart';
+import 'package:testflutt/data/service/project_service.dart';
 
 final categoryProvider =
     StateNotifierProvider.family<
@@ -126,5 +131,34 @@ class ImagePickerNotifier extends StateNotifier<XFile?> {
     if (cropped == null) return;
 
     state = XFile(cropped.path);
+  }
+}
+
+final ProjectProvider =
+    StateNotifierProvider<ProjectNotifier, AsyncValue<ProjectModel?>>(
+      (ref) => ProjectNotifier(),
+    );
+
+class ProjectNotifier extends StateNotifier<AsyncValue<ProjectModel?>> {
+  ProjectNotifier() : super(AsyncValue.data(null));
+
+  Future<void> create(insertProject project, XFile image) async {
+    state = AsyncValue.loading();
+    final mime = lookupMimeType(image.path) ?? 'image/jpeg';
+    final part = mime.split('/');
+    final form = FormData.fromMap({
+      "title": project.title,
+      "description": project.description,
+      "sub_id": project.sub_id,
+      "file": await MultipartFile.fromFile(
+        image.path,
+        filename: image.name,
+        contentType: MediaType(part[0], part[1]),
+      ),
+    });
+    final result = await AsyncValue.guard(
+      () => ProjectService().createProject(form),
+    );
+    state = result;
   }
 }
