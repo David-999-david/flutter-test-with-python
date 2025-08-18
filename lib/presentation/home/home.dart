@@ -53,6 +53,22 @@ class _HomeState extends ConsumerState<Home> {
     final filteredSub = selectedCategory == null
         ? <SubCategory>[]
         : allsub.where((s) => s.categoryId == selectedCategory!.id).toList();
+
+    ref.listen(ProjectProvider, (prev, next) {
+      next.when(
+        data: (data) {
+          titlec.clear();
+          descpc.clear();
+          ref.read(ImagePickerProvider.notifier).clear();
+          setState(() {
+            selectedCategory = null;
+            filteredSub.clear();
+          });
+        },
+        error: (error, _) {},
+        loading: () {},
+      );
+    });
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 50),
@@ -187,7 +203,7 @@ class _HomeState extends ConsumerState<Home> {
                             description: descpc.text,
                             sub_id: selecgedSub!.id,
                           ),
-                          XFile(pickedImage!.path),
+                          pickedImage,
                         );
                   },
                   child: Text('Confirm', style: 14.sp()),

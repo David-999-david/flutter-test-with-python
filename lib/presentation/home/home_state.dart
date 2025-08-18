@@ -132,6 +132,8 @@ class ImagePickerNotifier extends StateNotifier<XFile?> {
 
     state = XFile(cropped.path);
   }
+
+  void clear() => state = null;
 }
 
 final ProjectProvider =
@@ -142,20 +144,27 @@ final ProjectProvider =
 class ProjectNotifier extends StateNotifier<AsyncValue<ProjectModel?>> {
   ProjectNotifier() : super(AsyncValue.data(null));
 
-  Future<void> create(insertProject project, XFile image) async {
+  Future<void> create(insertProject project, XFile? image) async {
     state = AsyncValue.loading();
-    final mime = lookupMimeType(image.path) ?? 'image/jpeg';
-    final part = mime.split('/');
-    final form = FormData.fromMap({
+
+    final Map<String, dynamic> map = {
       "title": project.title,
       "description": project.description,
       "sub_id": project.sub_id,
-      "file": await MultipartFile.fromFile(
+    };
+
+    if (image != null) {
+      final mime = lookupMimeType(image.path) ?? 'image/jpeg';
+      final part = mime.split('/');
+      map['file'] = await MultipartFile.fromFile(
         image.path,
         filename: image.name,
         contentType: MediaType(part[0], part[1]),
-      ),
-    });
+      );
+    }
+
+    final form = FormData.fromMap(map);
+
     final result = await AsyncValue.guard(
       () => ProjectService().createProject(form),
     );
